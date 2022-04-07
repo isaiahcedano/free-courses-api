@@ -112,6 +112,7 @@ app.get("/pdscourses", async (req, res) => {
               }
             });
             pages.push({
+              salesPage,
               title: page(item).text(),
               downloadLink: {
                 mega: "",
@@ -121,7 +122,6 @@ app.get("/pdscourses", async (req, res) => {
                 mega: "",
                 koofr: "",
               },
-              salesPage: "",
               description: "",
             });
             return true;
