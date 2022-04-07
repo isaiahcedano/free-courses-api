@@ -74,6 +74,45 @@ app.get("/pdscourses", async (req, res) => {
       });
     // End
 
+    const productPages = await Promise.all(
+      categoricalPages.map(async ({title, link}) => {
+        let pages = [];
+        const range = [...Array(1).keys()];
+        const pagePromises = range.map(async num => {
+          const pagePromise = new Promise(async (resolve, reject) => {
+            try {
+              const $ = await jQueryWebsite(`${link}page/${num+1}`);
+              resolve($);
+            } catch(err) {
+              reject("error");
+            }
+          });
+          return await pagePromise;
+        });
+        const arr = await Promise.all(pagePromises);
+        arr.forEach(page => {
+          page("h2.entry-title > a").each((index, item) => {
+            pages.push({
+              title: page(item).text(),
+              downloadLink: {
+                mega: "",
+                koofr: ""
+              },
+              password: {
+                mega: "",
+                koofr: "",
+              },
+              salesPage: "",
+              description: "",
+            })
+          });
+        });
+        return {
+          [title]: pages,
+        }
+      })
+    );
+
     res.send(categoricalPages);
   } catch(err) {
     console.log(err);
@@ -115,21 +154,8 @@ app.listen(lPort, () => {
 
 
 // const productPages = await Promise.all(categoricalPages.map(async ({title, link}) => {
-//   let pages = [];
-//   const range = [...Array(1).keys()];
-//   const pagePromises = range.map(async num => {
-//     const pagePromise = new Promise(async (resolve, reject) => {
-//       try {
-//         const $ = await jQueryWebsite(`${link}page/${num+1}`);
-//         resolve($);
-//       } catch(err) {
-//         console.log("pagePromise", err);
-//         reject("error");
-//       }
-//     });
-//     return await pagePromise;
-//   });
-//   const arr = await Promise.all(pagePromises);
+
+
 //   arr.filter(page => Boolean(page)&&page!=="error").forEach(page => {
 //     page("h2.entry-title > a").each(async (index, item) => {
 //       try {
@@ -142,19 +168,7 @@ app.listen(lPort, () => {
 //             salesPage = productPage(item).attr("href");
 //           }
 //         });
-//         pages.push({
-//           salesPage,
-//           title: page(item).text(),
-//           downloadLink: {
-//             mega: "",
-//             koofr: ""
-//           },
-//           password: {
-//             mega: "",
-//             koofr: "",
-//           },
-//           description: "",
-//         })
+//
 //       } catch(err) {
 //         console.log("arr.filter error", err);
 //       }
