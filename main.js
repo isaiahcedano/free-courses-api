@@ -105,24 +105,22 @@ app.get("/pdscourses", async (req, res) => {
           return await Promise.all(page("h2.entry-title > a").map(async (index, item) => {
             const pageLink = page(item).attr("href");
             const productPage = await jQueryWebsite(pageLink);
-            let salesPage = "";
             productPage(".post-content > p > a").each((index, item) => {
               if (productPage(item).text().includes("Sales")) {
-                salesPage = productPage(item).attr("href");
+                pages.push({
+                  salesPage: productPage(item).attr("href"),
+                  title: page(item).text(),
+                  downloadLink: {
+                    mega: "",
+                    koofr: ""
+                  },
+                  password: {
+                    mega: "",
+                    koofr: "",
+                  },
+                  description: "",
+                });
               }
-            });
-            pages.push({
-              salesPage,
-              title: page(item).text(),
-              downloadLink: {
-                mega: "",
-                koofr: ""
-              },
-              password: {
-                mega: "",
-                koofr: "",
-              },
-              description: "",
             });
             return true;
           }));
