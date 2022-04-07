@@ -75,6 +75,8 @@ app.get("/pdscourses", async (req, res) => {
     // End
 
     const productPages = await Promise.all(
+      // promises that will resolve into a list of categories with
+      // their corresponding products.
       categoricalPages.map(async ({title, link}) => {
         // For each category product page, it'll loop through
         // the range to get all the available products.
@@ -99,8 +101,16 @@ app.get("/pdscourses", async (req, res) => {
 
         // For this category, loop through each product page number, select all the titles,
         // and add them into the pages array.
-        arr.forEach(page => {
-          page("h2.entry-title > a").each((index, item) => {
+        await Promise.all(arr.map(async page => {
+          return await Promise.all(page("h2.entry-title > a").map(async (index, item) => {
+            const pageLink = page(item).attr("href");
+            const productPage = await jQueryWebsite(pageLink);
+            let salesPage = "";
+            productPage(".post-content > p > a").each((index, item) => {
+              if (productPage(item).text().includes("Sales")) {
+                salesPage = productPage(item).attr("href");
+              }
+            });
             pages.push({
               title: page(item).text(),
               downloadLink: {
@@ -113,9 +123,10 @@ app.get("/pdscourses", async (req, res) => {
               },
               salesPage: "",
               description: "",
-            })
-          });
-        });
+            });
+            return true;
+          }));
+        }));
 
         // return a category as key and pages as value.
         return {
@@ -170,15 +181,8 @@ app.listen(lPort, () => {
 //   arr.filter(page => Boolean(page)&&page!=="error").forEach(page => {
 //     page("h2.entry-title > a").each(async (index, item) => {
 //       try {
-//         const pageLink = page(item).attr("href");
 //         console.log("pageLink", pageLink);
-//         const productPage = await jQueryWebsite(pageLink);
-//         let salesPage = "";
-//         productPage(".post-content > p > a").each((index, item) => {
-//           if (productPage(item).text().includes("Sales")) {
-//             salesPage = productPage(item).attr("href");
-//           }
-//         });
+//
 //
 //       } catch(err) {
 //         console.log("arr.filter error", err);
