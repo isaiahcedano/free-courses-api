@@ -81,8 +81,10 @@ app.get("/pdscourses", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("listening on port 3000");
+const lPort = process.env.PORT || 3000;
+
+app.listen(lPort, () => {
+  console.log(`listening to port ${lPort}`);
 });
 
 
