@@ -10,9 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.26.1",
     "cheerio": "^1.0.0-rc.10",
     "cors": "^2.8.5",
     "express": "^4.17.3",
-    "nodemon": "^2.0.15"
+    "https": "^1.0.0",
+    "nodemon": "^2.0.15",
+    "pretty": "^2.0.0"
   }
 }
