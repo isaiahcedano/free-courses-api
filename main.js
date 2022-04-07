@@ -76,6 +76,8 @@ app.get("/pdscourses", async (req, res) => {
 
     const productPages = await Promise.all(
       categoricalPages.map(async ({title, link}) => {
+        // For each category product page, it'll loop through
+        // the range to get all the available products.
         let pages = [];
         const range = [...Array(1).keys()];
         const pagePromises = range.map(async num => {
@@ -89,7 +91,14 @@ app.get("/pdscourses", async (req, res) => {
           });
           return await pagePromise;
         });
+        // It'll return a list of promises that'll resolve into
+        // the category product page number.
         const arr = await Promise.all(pagePromises);
+        // arr = category product page number. A list of product pages according
+        // to the category.
+
+        // For this category, loop through each product page number, select all the titles,
+        // and add them into the pages array.
         arr.forEach(page => {
           page("h2.entry-title > a").each((index, item) => {
             pages.push({
@@ -107,13 +116,15 @@ app.get("/pdscourses", async (req, res) => {
             })
           });
         });
+
+        // return a category as key and pages as value.
         return {
           [title]: pages,
         }
       })
     );
 
-    res.send(categoricalPages);
+    res.send(productPages);
   } catch(err) {
     console.log(err);
     res.send("failed");
