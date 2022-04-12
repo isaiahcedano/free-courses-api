@@ -4,6 +4,7 @@ const cheerio = require("cheerio");
 const axios = require("axios");
 const pretty = require("pretty");
 const app = express();
+const data = require("./database");
 
 // Middlewares
 app.use(cors());
@@ -11,9 +12,16 @@ app.use(express.json());
 // End Middlewares
 
 // Fetch website and access using jQuery type syntax.
-const jQueryWebsite = async url => {
+const jQueryWebsite = async (url, cookie="") => {
   try {
-    const { data } = await axios.get(url);
+    const config = {
+      url,
+      method: 'get',
+      headers: {
+        'Cookie': cookie,
+      }
+    };
+    const { data } = await axios(config);
     const $ = cheerio.load(data);
     return $;
   } catch(err) {
@@ -34,7 +42,43 @@ const selectorExists = async (selectorMatch, url) => {
 }
 // End
 
-app.get("/pdscourses", async (req, res) => {
+const pdscoursesLogin = new Promise((resolve, reject) => {
+  const FormData = require('form-data');
+  const data = new FormData();
+  data.append('amember_login', 'shogun_rake');
+  data.append('amember_pass', 'darkroses990');
+
+  const config = {
+    method: 'post',
+    url: 'https://pdscourses.com/amember/login',
+    headers: {
+      ...data.getHeaders()
+    },
+    data : data
+  };
+
+  axios(config, {
+    withCredentials: true,
+  })
+    .then((response) => {
+      // 'Cookie':
+      // 'PHPSESSID=hqnt4901gbof08eo53bsnmn9ud;
+      // amember_nr=6a9819e7afb81057969d7715403d6e88;
+      // amember_rp=d41a83c2006e71c28a1f081f8975761d18ed79a9;
+      // amember_ru=shogun_rake',
+      resolve({
+        cookie: response.headers['set-cookie'].reduce((curr, cook) => {
+          return `${curr}${cook}`;
+        }, ""),
+        url: response.data.url,
+      });
+    })
+    .catch((error) => {
+      reject(error);
+    });
+});
+
+const resetPdscourses = async () => {
   /*
   {
     category: [
@@ -55,27 +99,30 @@ app.get("/pdscourses", async (req, res) => {
   }
   */
   try {
+    // Login into pdscourses
+    const {url, cookie} = await pdscoursesLogin;
+
     // PDSCourses Home Page
-    const homePage = await jQueryWebsite("https://www.pdscourses.com/");
+    // const homePage = await jQueryWebsite("https://www.pdscourses.com/", cookie);
     // End
 
     // PDSCourses categorical pages
-    let categoricalPages = [];
-    // {
-    //   title: "Fitness, Healthy Lifestyle",
-    //   link: "https://www.pdscourses.com/fitness-healthy-lifestyle/",
-    // }
-    homePage("a.fusion-button")
-      .filter((index, item) => index>=7&&!homePage(item).text().includes("All"))
-      .map((index, ele) => (
-        {
-          title: homePage(ele).text(),
-          link: homePage(ele).attr("href"),
-        }
-      ))
-      .each((index, item) => {
-        categoricalPages.push(item);
-      });
+    let categoricalPages = [{
+      title: "Self Improvement",
+      link: "https://www.pdscourses.com/hypnosis-nlp-psychology/",
+    }];
+
+    // homePage("a.fusion-button")
+    //   .filter((index, item) => index>=7&&!homePage(item).text().includes("All"))
+    //   .map((index, ele) => (
+    //     {
+    //       title: homePage(ele).text(),
+    //       link: homePage(ele).attr("href"),
+    //     }
+    //   ))
+    //   .each((index, item) => {
+    //     categoricalPages.push(item);
+    //   });
     // End
 
     const productPages = await Promise.all(
@@ -85,11 +132,11 @@ app.get("/pdscourses", async (req, res) => {
         // For each category product page, it'll loop through
         // the range to get all the available products.
         let pages = [];
-        const range = [...Array(3).keys()];
+        const range = [...Array(11).keys()];
         const pagePromises = range.map(async num => {
           const pagePromise = new Promise(async (resolve, reject) => {
             try {
-              const $ = await jQueryWebsite(`${link}page/${num+1}`);
+              const $ = await jQueryWebsite(`${link}page/${num+1}`, cookie);
               resolve($);
             } catch(err) {
               reject("error");
@@ -110,27 +157,27 @@ app.get("/pdscourses", async (req, res) => {
             const pageLink = page(item).attr("href");
             let salesPage = "";
             let description = "";
+            const megaLink = [];
+            const koofrLink = [];
+            const mediaLink = [];
+            const megaPasswords = [];
+            const mediaPasswords = [];
+            const koofrPasswords = [];
+            const passwords = [];
             try {
-              const productPage = await jQueryWebsite(pageLink);
-              productPage(".post-content > p > a").each((index, item) => {
+              const productPage = await jQueryWebsite(pageLink, cookie);
+
+              // Set product salespage
+              productPage("a").each((index, item) => {
                 if (productPage(item).text().includes("Sales")) {
                   salesPage = productPage(item).attr("href");
                 }
               });
-              if (productPage(".fusion-text > h3").length) {
-                productPage(".fusion-text > h3")
-                .each((index, item) => {
-                  if (
-                    !productPage(item).text().includes("SIZE:") &&
-                    !productPage(item).text().includes("Size:") &&
-                    productPage(item).text() !== "DOWNLOAD" &&
-                    productPage(item).text() !== "Download"
-                  ) {
-                    description = `${description ? description + " " : ''}${productPage(item).text()}`
-                  }
-                });
-              } else if (productPage(".post-content > h3").length) {
-                productPage(".post-content > h3")
+              // End
+
+              // Set product description
+              if (productPage("h3").length) {
+                productPage("h3")
                 .each((index, item) => {
                   if (
                     !productPage(item).text().includes("SIZE:") &&
@@ -142,23 +189,46 @@ app.get("/pdscourses", async (req, res) => {
                   }
                 });
               }
-              // document.querySelectorAll(".fusion-text > h3");
-              // document.querySelectorAll(".post-content > h3");
+              // End
+
+              // Set product link
+              if (productPage("a").length) {
+                productPage("a").each((index, ele) => {
+                  if (productPage(ele).attr("href")
+                      .includes("mega.nz")) {
+                    megaLink.push(productPage(ele).attr("href"));
+                  } else if (productPage(ele).attr("href").includes("k00.fr")) {
+                    koofrLink.push(productPage(ele).attr("href"));
+                  } else if (productPage(ele).attr("href").includes("mediafire.com")) {
+                    mediaLink.push(productPage(ele).attr("href"));
+                  }
+                });
+              }
+              // End
+
+              // Set product password
+              if (productPage("p, h2, h3, h4, h5, h6, span").length) {
+                productPage("p, h2, h3, h4, h5, h6, span").each((index, ele) => {
+                  if (productPage(ele).text().includes("Password")) {
+                    passwords.push(productPage(ele).text());
+                  }
+                })
+              }
+
               pages.push({
                 salesPage,
                 description,
                 title: page(item).text(),
                 downloadLink: {
-                  mega: "",
-                  koofr: ""
+                  mega: megaLink,
+                  koofr: koofrLink,
+                  media: mediaLink,
                 },
-                password: {
-                  mega: "",
-                  koofr: "",
-                },
+                password: passwords,
               });
               return true;
             } catch(err) {
+              console.log(err);
               return false;
             }
           }));
@@ -184,57 +254,15 @@ app.get("/pdscourses", async (req, res) => {
     console.log(err);
     res.send("failed");
   }
+}
+
+app.get("/pdscourses", async (req, res) => {
+  res.send(data);
 });
+
 
 const lPort = process.env.PORT || 3000;
 
 app.listen(lPort, () => {
   console.log(`listening to port ${lPort}`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const productPages = await Promise.all(categoricalPages.map(async ({title, link}) => {
-
-
-//   arr.filter(page => Boolean(page)&&page!=="error").forEach(page => {
-//     page("h2.entry-title > a").each(async (index, item) => {
-//       try {
-//         console.log("pageLink", pageLink);
-//
-//
-//       } catch(err) {
-//         console.log("arr.filter error", err);
-//       }
-//     });
-//   });
-//   return {
-//     [title]: pages,
-//   }
-// }));
-// console.log(productPages);
