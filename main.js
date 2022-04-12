@@ -257,7 +257,7 @@ const resetPdscourses = async () => {
 }
 
 app.get("/pdscourses", async (req, res) => {
-  res.send(data);
+  res.json(data);
 });
 
 
