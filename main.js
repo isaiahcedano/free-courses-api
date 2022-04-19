@@ -447,6 +447,20 @@ app.post("/user", async (req, res) => {
 	}
 });
 
+app.post("/kill", async (req, res) => {
+	const {token} = req.body;
+	if (tokens[token]) {
+		tokens = {...Object.entries(tokens)
+							.filter(([toke, user]) => toke!==token)
+							.reduce((curr,[toke, user]) => ({
+								...curr,
+								[toke]:user
+							}), {})};
+
+	}
+	res.json(true);
+})
+
 // app.get("/pdscourses", async (req, res) => {
 //   /*
 //   {
