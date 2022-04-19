@@ -7,11 +7,13 @@ const app = express();
 const data = require("./database");
 const bcrypt = require("bcrypt");
 const knex = require('knex')({
-  client: 'pg',
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+	client: 'pg',
+	connection: {
+		connectionString: process.env.DATABASE_URL,
+		ssl: {
+			rejectUnauthorized: false
+		}
+	}
 });
 
 // Middlewares
