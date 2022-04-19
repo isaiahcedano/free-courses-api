@@ -360,16 +360,20 @@ app.post("/register", async (req, res) => {
   try {
     bcrypt.genSalt(saltRounds, (err, salt) => {
         bcrypt.hash(pass, salt, async (err, hash) => {
-          await knex.transaction(trx => {
-            trx("users").insert({
-              name,
-              email,
-              pass: hash,
-              registration_date: new Date(),
-            }).then(trx.commit).catch(trx.rollback);
-          });
-          res.json(true);
-        });
+          try {
+            await knex.transaction(trx => {
+              trx("users").insert({
+                name,
+                email,
+                pass: hash,
+                registration_date: new Date(),
+              }).then(trx.commit).catch(trx.rollback);
+            });
+            res.json(true);
+          } catch(err) {
+            res.json(false);
+          }
+      });
     });
   } catch(err) {
     res.json(false);
