@@ -5,6 +5,13 @@ const axios = require("axios");
 const pretty = require("pretty");
 const app = express();
 const data = require("./database");
+const bcrypt = require("bcrypt");
+const knex = require('knex')({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 // Middlewares
 app.use(cors());
@@ -275,6 +282,112 @@ app.get("/products", async (req, res) => {
     }
   }, {})
   res.json(products);
+});
+
+const getInfo = (db, item) => {
+
+  let productInfo = Object.entries(db).reduce((curr, [category, courses]) => [
+    ...curr,
+    courses.filter((product) => {
+      if (item===product.title) {
+        return {
+          category,
+          ...product,
+        }
+      }
+    })[0],
+  ], []).filter(item => typeof(item)!=="undefined");
+
+  if (typeof(productInfo) === 'undefined') {
+    productInfo = {
+      title: item,
+      price: 0,
+      description: "",
+      salesPage: "",
+      category: "",
+    }
+  }
+  return productInfo;
+}
+
+app.post("/purchase", async (req, res) => {
+  const products = Object.entries(data).reduce((curr, [category, courses]) => {
+    return {
+      ...curr,
+      [category]: courses.reduce((curr, {title, salesPage, description, imgSrc}) => {
+        return [
+          ...curr,
+          {
+            title,
+            imgSrc,
+            salesPage,
+            description,
+            price: '2.99',
+          }
+        ]
+      }, [])
+    }
+  }, {})
+
+  const axiosConfig = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Ri2aTRa91ubV5RYK6XjYgQ'
+    }
+  }
+  const {cart} = req.body;
+  const validCart = cart.filter(({quantity}) => quantity === '1');
+  const totalAmount = validCart.reduce((curr, {item, quantity}) => {
+    const productInfo = getInfo(products, item)[0];
+    const digit = curr + (productInfo.price*quantity);
+    return Number((Math.round(digit*100)/100).toFixed(2));
+  }, 0);
+  const btcResponse = await axios.post("https://www.poof.io/api/v1/create_invoice", {
+    amount: totalAmount.toString(),
+    crypto: "BTC",
+    currency: "USD",
+    redirect: "https://coursehome.netlify.app/home"
+  }, axiosConfig);
+  res.json(btcResponse.data);
+});
+
+app.post("/register", async (req, res) => {
+  const {name, email, pass} = req.body;
+  const saltRounds = 12;
+  try {
+    bcrypt.genSalt(saltRounds, (err, salt) => {
+        bcrypt.hash(pass, salt, async (err, hash) => {
+          await knex.transaction(trx => {
+            trx("users").insert({
+              name,
+              email,
+              pass: hash,
+              registration_date: new Date(),
+            }).then(trx.commit).catch(trx.rollback);
+          });
+          res.json(true);
+        });
+    });
+  } catch(err) {
+    res.json(false);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  const {email, pass} = req.body;
+  let reqEmail = email;
+  try {
+    const response = await knex.select('email', 'pass').from('users');
+    const dbUser = response.filter(({email}) => email===reqEmail)[0];
+    if (!dbUser) {
+      throw Error();
+    }
+    bcrypt.compare(pass, dbUser.pass, (err, result) => {
+      res.json(result);
+    });
+  } catch(err) {
+    res.json(false);
+  }
 });
 
 // app.get("/pdscourses", async (req, res) => {
