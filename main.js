@@ -387,7 +387,20 @@ app.post("/register", async (req, res) => {
   }
 });
 
+let tokens = [];
+
 app.post("/login", async (req, res) => {
+	const createToken = () => {
+    let result           = '';
+    let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let charactersLength = characters.length;
+    for ( var i = 0; i < 16; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() *
+ 			charactersLength));
+   	}
+   return result;
+	}
+
   const {email, pass} = req.body;
   let reqEmail = email;
   try {
@@ -397,11 +410,27 @@ app.post("/login", async (req, res) => {
       throw Error();
     }
     bcrypt.compare(pass, dbUser.pass, (err, result) => {
-      res.json(result);
+			if (result) {
+				const token = createToken();
+				tokens.push(token);
+				setTimeout(() => {
+					tokens = tokens.filter(toke => toke!==token);
+				}, 3600000);
+				res.json({
+					token,
+				});
+			} else {
+				res.json(false);
+			}
     });
   } catch(err) {
     res.json(false);
   }
+});
+
+app.post("/check", async (req, res) => {
+	const {token} = req.body;
+	res.json(tokens.includes(token));
 });
 
 // app.get("/pdscourses", async (req, res) => {
