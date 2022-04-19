@@ -387,7 +387,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-let tokens = [];
+let tokens = {};
 
 app.post("/login", async (req, res) => {
 	const createToken = () => {
@@ -404,7 +404,7 @@ app.post("/login", async (req, res) => {
   const {email, pass} = req.body;
   let reqEmail = email;
   try {
-    const response = await knex.select('email', 'pass').from('users');
+    const response = await knex.select('email', 'pass', 'name').from('users');
     const dbUser = response.filter(({email}) => email===reqEmail)[0];
     if (!dbUser) {
       throw Error();
@@ -412,9 +412,14 @@ app.post("/login", async (req, res) => {
     bcrypt.compare(pass, dbUser.pass, (err, result) => {
 			if (result) {
 				const token = createToken();
-				tokens.push(token);
+				tokens[token] = dbUser.name;
 				setTimeout(() => {
-					tokens = tokens.filter(toke => toke!==token);
+					tokens = {...Object.entries(tokens)
+										.filter(([toke, user]) => toke!==token)
+										.reduce((curr,[toke, user]) => ({
+											...curr,
+											[toke]:user
+										}), {})};
 				}, 3600000);
 				res.json({
 					token,
@@ -430,7 +435,16 @@ app.post("/login", async (req, res) => {
 
 app.post("/check", async (req, res) => {
 	const {token} = req.body;
-	res.json(tokens.includes(token));
+	res.json(Object.keys(tokens).includes(token));
+});
+
+app.post("/user", async (req, res) => {
+	const {token} = req.body;
+	if (tokens[token]) {
+		res.json(tokens[token]);
+	} else {
+		res.json("");
+	}
 });
 
 // app.get("/pdscourses", async (req, res) => {
