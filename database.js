@@ -3030,6 +3030,59 @@ module.exports = {
   ],
   "PDS Courses": [
       {
+        "salesPage": "https://sexualquantumleap.com/best-she-ever-had/",
+        "description": "Yo, It’s Andrew here…\
+        And in just a moment I’ll reveal a brand new system I’ve used to coach hundreds of men to:\
+        Develop Insane Confidence in the Bedroom and Know Exactly How to Please Any Woman\
+        Make a Woman Crave your Cock, Constantly Beg You for Sex & Never Want to Lose You\
+        Give Her Mindblowing Multiple Orgasms & Connect with Her Deeply\
+        This system doesn’t require pills, pumps or potions… It’s not dating advice, PUA or that “alpha male” bullshit.\
+        It’s not hard, difficult, or time-consuming at all… In fact, literally any guy can learn this system that took me 9 years to figure out. You can take what I’ve discovered, learn this system today and start giving her the best experience of her life TONIGHT.\
+        Heck, if your girl’s with you right now, you can even start doing it 10-15 minutes from now.\
+        Introducing… Sexual Quantum Leap Methodology\
+        This is something NO ONE talks about.\
+        After coaching hundreds of men on sex over the past few years – I uncovered something truly shocking.\
+        And here’s the thing:\
+        As a guy – what I’m about to reveal is not even your fault. We live in a society that conditions us from a young age, that sex is “taboo”. Never to be discussed. You don’t talk about it ever. Yet all of us do it… right?\
+        That’s just fucking insane to me.\
+        But here’s the really crazy part: I get hundreds of messages from guys, that can’t confront their sexual demons… and it destroys their relationships.\
+        Which is exactly why I created a system to help men across the world overcome this.\
+        It’s really simple. I teach you this system. You start applying it. And it’s GAME OVER.\
+        You’ll discover how to:\
+        Last as Long as You Want, Have Full Control over Your Ejaculation & Have Amazing Sex All Night\
+        Have Her Scream “You’re The Best I’ve Ever Had” so She Never Wants to Leave You\
+        Build a Deeper Connection with Your Intimate Partner Through Sex\
+        Understand How to Communicate Your Sexual Desires & Get Your Needs Met Sexually\
+        Have Any Woman You Have Sex With Utterly Addicted to You & Willing to do Anything to Keep You Around\
+        Kill Your Sexual Anxiety & Relax Your Body Completely\
+        Boost Your Sexual Energy & Heighten Your Arousal Levels\
+        Increase your Woman’s & Your Own Levels of Sexual Pleasure\
+        Spice Up Your Sex Life & Live Out Your Fantasies\
+        Make A Woman Squirt Like Niagara Falls (Yes, every woman can)\
+        Unlock Your Orgasmic Potential\
+        Secrets to Add Variety to Your Sex Life With a Significant Partner\
+        How to be Rougher, More Assertive & Dominant in the Bedroom\
+        PLUS Tons more\
+        SIZE: 5,3 GB",
+        "imgSrc": "https://www.pdscourses.com/wp-content/uploads/2020/11/Sexual-Quantum-Leap_thumb.png",
+        "title": "Sexual Quantum Leap – Best She Ever Had",
+        "downloadLink": {
+            "mega": [
+                "https://mega.nz/folder/cXgQDIJK#Y9_bme23IB4iHTTyysOIgw"
+            ],
+            "koofr": [
+                "https://k00.fr/ecp87rq9"
+            ],
+            "media": [
+
+            ]
+        },
+        "password": [
+            "",
+            "Password: 625120"
+        ],
+      },
+      {
           "salesPage": "",
           "description": "WHEN YOU FIND OUT HOW I’M DOING THIS YOU’RE GOING TO BE SICK I have a confession to make. I’ve met hundreds of beautiful women online BY CHEATING. Do you want to know truth about online dating in 2020? Everything is controlled by algorithms. Tinder, Instagram, Bumble, Hing all have algorithms – and once you know how to trick them…everything changes The reality is the online dating world is rigged against men. The “online dating” industry makes millions of dollars exploiting men’s desire to meet women with bot accounts, algorithms that hide your profile unless you pay, even charging men a fee to simply message a girl. Tinder for example gives you a “desirability” score based on how many girls swipe right on you, and if your score is low less girls will see your profile. Tinder also intentionally chokes your profile’s visibility unless you PAY THEM for boosts. On top of all of this, Tinder even will CHARGE YOU MORE MONEY based on your AGE and LOCATION. Bumble, Hing, Okcupid, and many other dating services all have built systems and algorithms to completely exploit you. There are even dating apps that will give you fake matches with fake profiles that detect your location and fool you into thinking it’s a real girl who’s just a few miles away – you are soon told if you want to reply to her message you need to be a “VIP member” which cost $19.99 – After you fall for the scam the fake girl profile slowly stops responding. The entire online dating industry is laughing at you. The entire online dating industry is exploiting you. The system is rigged against you. So what can you do? You really have 2 options A. Pay hundreds of dollars in subscription fees, boosts, stupid perks B. Give up. There’s actually a 3rd option. CHEAT Playing by the rules is no longer an option. GET DATES BY RUNNING FAKE ADS ON INSTAGRAM In this program I will reveal my 3 step system to seduce virtually any girl who’s comfortable to come home with you. \n\t\t\t\t\t\tRelated Posts\t\t\t\t\t Leave A Comment Cancel reply",
           "imgSrc": "https://www.pdscourses.com/wp-content/uploads/2022/02/David-Bond-The-Digital-Pickup-Become-an-Online-Dating-God_thumb.png",
@@ -3043,7 +3096,8 @@ module.exports = {
               ],
               "media": []
           },
-          "password": []
+          "password": [],
+          "special": true,
       },
       {
           "salesPage": "https://www.amazon.com/Think-Get-Laid-Unlocking-Attraction-ebook/dp/B017RNAU7U",
@@ -5004,5 +5058,26 @@ module.exports = {
             },
             "password": []
         }
-    ]
+    ],
+  "Finance": [
+    {
+        "salesPage": "https://codingphase.teachable.com/p/shopify-theme-development-2-0",
+        "imgSrc": "https://res.cloudinary.com/dsi2jzule/image/upload/v1665911133/newsshot/Screenshot_from_2022-10-16_04-03-29_giaedh.png",
+        "description": "Hi my name is Joe Santos Garcia a web developer based out of NYC. I've worked on projects for major companies. I have a successful youtube channel with over 50,000 subscribers who love my tutorials and over 50,000 students world wide in multiple platforms. My goal is to get all my students and subscribers to level of being hired as a developer.",
+        "title": "Shopify Theme Development",
+        "downloadLink": {
+            "mega": [
+                "https://mega.nz/#P!AgAQtjQBnlqVsBlI6NHnM4RmxRwhWHCLT-p8NdjYzOT0pAynjUKKyk20JaqtV68gqzzzQ1BhbJZnefqniD-eI5fSgls_JmTIEIjo-v3avcF44K4E1L3Chw"
+            ],
+            "koofr": [
+                "https://k00.fr/ygbsbtbm"
+            ],
+            "media": []
+        },
+        "password": [
+            "Password: 25497Tgrd",
+            "Password: 747356"
+        ]
+    },
+  ]
 };

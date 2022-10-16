@@ -270,7 +270,7 @@ app.get("/products", async (req, res) => {
   const products = Object.entries(data).reduce((curr, [category, courses]) => {
     return {
       ...curr,
-      [category]: courses.reduce((curr, {title, salesPage, description, imgSrc}) => {
+      [category]: courses.reduce((curr, {title, salesPage, description, imgSrc, special}) => {
         return [
           ...curr,
           {
@@ -278,7 +278,7 @@ app.get("/products", async (req, res) => {
             imgSrc,
             salesPage,
             description,
-            price: '2.99',
+            price: special ? "5.99" : '2.99',
           }
         ]
       }, [])
@@ -317,7 +317,7 @@ app.post("/purchase", async (req, res) => {
   const products = Object.entries(data).reduce((curr, [category, courses]) => {
     return {
       ...curr,
-      [category]: courses.reduce((curr, {title, salesPage, description, imgSrc}) => {
+      [category]: courses.reduce((curr, {title, salesPage, description, imgSrc, special}) => {
         return [
           ...curr,
           {
@@ -325,7 +325,7 @@ app.post("/purchase", async (req, res) => {
             imgSrc,
             salesPage,
             description,
-            price: '2.99',
+            price: special ? "5.99" : '2.99',
           }
         ]
       }, [])
